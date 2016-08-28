@@ -21,7 +21,12 @@
         <activity
             android:name=".activity.ProductListActivity"
             android:label="@string/title_product_list"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.vladc.android.mobileerptool.activity.MainActivity" />
+        </activity>
+
         <activity
             android:name=".activity.ProductDetailActivity"
             android:label="@string/title_product_detail"
@@ -39,6 +44,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.vladc.android.mobileerptool.activity.ProductListActivity" />
+        </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.vladc.android.mobileerptool.activity.MainActivity" />
         </activity>
     </application>
 
