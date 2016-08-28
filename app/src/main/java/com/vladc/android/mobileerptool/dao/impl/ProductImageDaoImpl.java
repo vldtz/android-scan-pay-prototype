@@ -8,30 +8,31 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.vladc.android.mobileerptool.dao.ProductDao;
-import com.vladc.android.mobileerptool.dao.entity.Product;
+import com.vladc.android.mobileerptool.dao.ProductImageDao;
+import com.vladc.android.mobileerptool.dao.entity.ProductImage;
+import com.vladc.android.mobileerptool.db.DbBitmapUtil;
 import com.vladc.android.mobileerptool.db.MobileErpDbHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.vladc.android.mobileerptool.db.MobileErpContract.ProductsTable;
+import static com.vladc.android.mobileerptool.db.MobileErpContract.ProductImagesTable;
 
 /**
  * Created by Vlad.
  */
-public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements ProductDao {
+public class ProductImageDaoImpl extends AbstractDaoImpl<Long,ProductImage> implements ProductImageDao {
 
     private Context mContext;
     private MobileErpDbHelper mDbHelper;
     private SQLiteDatabase mDb;
 
-    public ProductDaoImpl(Context context) {
+    public ProductImageDaoImpl(Context context) {
         mContext = context;
     }
 
-    public ProductDaoImpl open() throws SQLException {
+    public ProductImageDaoImpl open() throws SQLException {
         mDbHelper = new MobileErpDbHelper(mContext);
         mDb = mDbHelper.getWritableDatabase();
         return this;
@@ -42,29 +43,29 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
     }
 
     @Override
-    public Product findById(Long id) {
-        String selection = ProductsTable.COLUMN_NAME_ID + " = ?";
+    public ProductImage findById(Long id) {
+        String selection = ProductImagesTable.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
         return fetchOne(selection, selectionArgs, null, null, null);
     }
 
     @Override
-    public Product findByBarcode(String barcode) {
-        String selection = ProductsTable.COLUMN_NAME_BARCODE + " = ?";
-        String[] selectionArgs = {barcode};
+    public ProductImage findByProductId(Long productId) {
+        String selection = ProductImagesTable.COLUMN_NAME_PRODUCT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(productId)};
         return fetchOne(selection, selectionArgs, null, null, null);
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<ProductImage> findAll() {
         return fetchList(null,null,null,null,null);
     }
 
     @Nullable
-    private Product fetchOne(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
+    private ProductImage fetchOne(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
         Cursor cursor = mDb.query(
-                ProductsTable.TABLE_NAME,                     // The table to query
-                ProductsTable.COLUMNS,                               // The columns to return
+                ProductImagesTable.TABLE_NAME,                     // The table to query
+                ProductImagesTable.COLUMNS,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
                 group,                                     // don't group the rows
@@ -80,38 +81,37 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
     }
 
     @Override
-    public Long insert(Product product){
+    public Long insert(ProductImage productImage){
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(ProductsTable.COLUMN_NAME_BARCODE, product.getBarcode());
-        values.put(ProductsTable.COLUMN_NAME_NAME, product.getName());
-        values.put(ProductsTable.COLUMN_NAME_QUANTITY, product.getQuantity());
+        values.put(ProductImagesTable.COLUMN_NAME_PRODUCT_ID, productImage.getProductId());
+        values.put(ProductImagesTable.COLUMN_NAME_IMAGE, DbBitmapUtil.getBytes(productImage.getImage()));
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = mDb.insert(ProductsTable.TABLE_NAME, null, values);
+        long newRowId = mDb.insert(ProductImagesTable.TABLE_NAME, null, values);
         return newRowId;
     }
 
     @Override
-    public Long update(Product product){
+    public Long update(ProductImage productImage){
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(ProductsTable.COLUMN_NAME_BARCODE, product.getBarcode());
-        values.put(ProductsTable.COLUMN_NAME_NAME, product.getName());
-        values.put(ProductsTable.COLUMN_NAME_QUANTITY, product.getQuantity());
+        values.put(ProductImagesTable.COLUMN_NAME_PRODUCT_ID, productImage.getProductId());
+        values.put(ProductImagesTable.COLUMN_NAME_IMAGE, DbBitmapUtil.getBytes(productImage.getImage()));
+
 
         // Which row to update, based on the title
-        String selection = ProductsTable.COLUMN_NAME_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(product.getId())};
+        String selection = ProductImagesTable.COLUMN_NAME_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(productImage.getId())};
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = mDb.update(ProductsTable.TABLE_NAME, values, selection, selectionArgs);
+        long newRowId = mDb.update(ProductImagesTable.TABLE_NAME, values, selection, selectionArgs);
         return newRowId;
     }
 
-    private List<Product> fetchList(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
+    private List<ProductImage> fetchList(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
         Cursor cursor = mDb.query(
-                ProductsTable.TABLE_NAME,                     // The table to query
-                ProductsTable.COLUMNS,                        // The columns to return
+                ProductImagesTable.TABLE_NAME,                     // The table to query
+                ProductImagesTable.COLUMNS,                        // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
                 group,                                     // don't group the rows
@@ -120,7 +120,7 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
         );
 
         if (cursor.moveToFirst()){
-            List<Product> entities = new ArrayList<>();
+            List<ProductImage> entities = new ArrayList<>();
             do {
                 entities.add(transform(cursor));
             } while (cursor.moveToNext());
@@ -132,12 +132,11 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
 
     @NonNull
     @Override
-    protected Product transform(Cursor cursor) {
-        Product entity = new Product();
-        entity.setId(cursor.getLong(cursor.getColumnIndex(ProductsTable.COLUMN_NAME_ID)));
-        entity.setName(cursor.getString(cursor.getColumnIndex(ProductsTable.COLUMN_NAME_NAME)));
-        entity.setBarcode(cursor.getString(cursor.getColumnIndex(ProductsTable.COLUMN_NAME_BARCODE)));
-        entity.setQuantity(cursor.getLong(cursor.getColumnIndex(ProductsTable.COLUMN_NAME_QUANTITY)));
+    protected ProductImage transform(Cursor cursor) {
+        ProductImage entity = new ProductImage();
+        entity.setId(cursor.getLong(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_ID)));
+        entity.setProductId(cursor.getLong(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_PRODUCT_ID)));
+        entity.setImage(DbBitmapUtil.getImage(cursor.getBlob(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_IMAGE))));
 
         return entity;
     }

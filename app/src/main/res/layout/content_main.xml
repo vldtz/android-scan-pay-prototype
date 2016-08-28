@@ -20,13 +20,45 @@
         <ImageButton
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:id="@+id/imageButton"
+            android:id="@+id/gotoListBtn"
             android:layout_margin="15dp"
-            android:background="#8a8a8a"
+            android:background="@color/button_material_light"
+            android:foreground="@drawable/ic_menu_barcode"
+            android:visibility="visible"
+            android:src="@drawable/ic_menu_list" />
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:id="@+id/barcodeScanBtn"
+            android:layout_margin="15dp"
+            android:background="@color/button_material_light"
+            android:foreground="@drawable/ic_menu_barcode"
+            android:visibility="visible"
+            android:src="@drawable/ic_menu_barcode" />
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:id="@+id/imageScanBtn"
+            android:layout_margin="15dp"
+            android:background="@color/button_material_light"
             android:foregroundTint="#160e8a"
             android:foreground="@android:drawable/ic_dialog_dialer"
             android:visibility="visible"
             android:src="@drawable/ic_menu_camera" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/scannedImageView" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

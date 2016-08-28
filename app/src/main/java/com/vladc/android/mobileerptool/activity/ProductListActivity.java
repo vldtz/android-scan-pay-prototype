@@ -13,7 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.dao.entity.Product;
 import com.vladc.android.mobileerptool.dao.impl.ProductDaoImpl;
@@ -49,11 +52,11 @@ public class ProductListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final Intent addNewIntent = new Intent(this,AddEditProductActivity.class);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(addNewIntent);
+                initBarcodeScan();
             }
         });
 
@@ -69,6 +72,17 @@ public class ProductListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initBarcodeScan() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setOrientationLocked(false);
+//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        integrator.setPrompt("Scanati codul de bare");
+//            integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setBeepEnabled(false);
+//            integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -151,6 +165,24 @@ public class ProductListActivity extends AppCompatActivity {
             public String toString() {
                 return super.toString() + " '" + mNameView.getText() + "'";
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainActivity.REQUEST_BARCODE_CAPTURE && result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Intent addEditProduct = new Intent(this, AddEditProductActivity.class);
+                addEditProduct.putExtra(ProductDetailFragment.ARG_ITEM_BARCODE, result.getContents());
+                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+
+                startActivity(addEditProduct);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 }
