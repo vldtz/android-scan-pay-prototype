@@ -1,13 +1,12 @@
 package com.vladc.android.mobileerptool.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -122,9 +121,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
+                Uri photoURI = Uri.fromFile(photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, MainActivity.REQUEST_IMAGE_CAPTURE);
             }
@@ -134,9 +131,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     // Get the results:
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MainActivity.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+        if (requestCode == MainActivity.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
 
             ProductImageDaoImpl productImageDao = new ProductImageDaoImpl(this);
             productImageDao.open();
@@ -144,9 +141,16 @@ public class ProductDetailActivity extends AppCompatActivity {
             ProductImage pi = new ProductImage();
             pi.setImagePath(mCurrentPhotoPath);
             pi.setProductId(mCurrentProductId);
-            pi.setImage(imageBitmap);
+            productImageDao.insert(pi);
+            productImageDao.close();
+//            pi.setImage(imageBitmap);
 //            mImageView.setImageBitmap(imageBitmap);
 //            mImageView.setVisibility(View.VISIBLE);
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            final File file = new File(mCurrentPhotoPath);
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 
@@ -154,7 +158,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -162,7 +166,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 }

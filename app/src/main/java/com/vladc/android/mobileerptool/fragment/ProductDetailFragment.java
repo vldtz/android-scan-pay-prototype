@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.activity.ProductDetailActivity;
 import com.vladc.android.mobileerptool.activity.ProductListActivity;
@@ -25,6 +27,7 @@ import com.vladc.android.mobileerptool.dao.entity.ProductImage;
 import com.vladc.android.mobileerptool.dao.impl.ProductDaoImpl;
 import com.vladc.android.mobileerptool.dao.impl.ProductImageDaoImpl;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -41,6 +44,8 @@ public class ProductDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
     public static final String ARG_ITEM_BARCODE = "item_barcode";
+
+    protected ImageLoader imageLoader = ImageLoader.getInstance();
 
     /**
      * The dummy content this fragment is presenting.
@@ -98,6 +103,9 @@ public class ProductDetailFragment extends Fragment {
             mImagesList = productImageDao.findByProductId(mItem.getId());
 
             mImageView = (ImageView) rootView.findViewById(R.id.image_large);
+            if (!mImagesList.isEmpty()) {
+                imageLoader.displayImage(Uri.fromFile(new File(mImagesList.get(0).getImagePath())).toString(),mImageView);
+            }
             mGallery = (Gallery) rootView.findViewById(R.id.thumb_gallery);
             mGallery.setAdapter(new ImageAdapter(getContext(),mImagesList));
             mGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -106,7 +114,7 @@ public class ProductDetailFragment extends Fragment {
                     Toast.makeText(getContext(),"pic" + (position + 1) + " selected",
                             Toast.LENGTH_SHORT).show();
                     // display the images selected
-                    setPic(mImagesList.get(position));
+                    imageLoader.displayImage(Uri.fromFile(new File(mImagesList.get(position).getImagePath())).toString(), mImageView);
                 }
             });
         }
@@ -114,10 +122,15 @@ public class ProductDetailFragment extends Fragment {
         return rootView;
     }
 
-    private void setPic(ProductImage image) {
+    private void setPic(ProductImage image, ImageView imageView) {
         // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        if (targetH == 0 || targetW == 0){
+            targetH = imageView.getLayoutParams().height;
+            targetW = imageView.getLayoutParams().width;
+        }
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -135,7 +148,7 @@ public class ProductDetailFragment extends Fragment {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(image.getImagePath(), bmOptions);
-        mImageView.setImageBitmap(bitmap);
+        imageView.setImageBitmap(bitmap);
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -167,9 +180,9 @@ public class ProductDetailFragment extends Fragment {
         // returns an ImageView view
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView = new ImageView(context);
-            imageView.setImageBitmap(mImagesList.get(position).getImage());
             imageView.setLayoutParams(new Gallery.LayoutParams(100, 100));
             imageView.setBackgroundResource(itemBackground);
+            imageLoader.displayImage(Uri.fromFile(new File(mImagesList.get(position).getImagePath())).toString(), imageView);
             return imageView;
         }
     }
