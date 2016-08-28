@@ -13,8 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.vladc.android.mobileerptool.R;
+import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -86,7 +90,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_scan_barcode) {
-            // Handle the camera action
+            IntentIntegrator integrator = new IntentIntegrator(this);
+            integrator.setOrientationLocked(false);
+//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+            integrator.setPrompt("Scanati codul de bare");
+//            integrator.setCameraId(0);  // Use a specific camera of the device
+            integrator.setBeepEnabled(false);
+//            integrator.setBarcodeImageEnabled(true);
+            integrator.initiateScan();
+
         } else if (id == R.id.nav_product_list) {
             Intent intent = new Intent(this, ProductListActivity.class);
             startActivity(intent);
@@ -97,5 +109,24 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Get the results:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Intent addEditProduct = new Intent(this, AddEditProductActivity.class);
+                addEditProduct.putExtra(ProductDetailFragment.ARG_ITEM_BARCODE, result.getContents());
+                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+
+                startActivity(addEditProduct);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

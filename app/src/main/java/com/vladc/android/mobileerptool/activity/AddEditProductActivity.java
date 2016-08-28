@@ -44,7 +44,7 @@ public class AddEditProductActivity extends AppCompatActivity {
         if (getIntent().hasExtra(ProductDetailFragment.ARG_ITEM_ID)){
             mProduct = loadProduct(getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID,0L));
         } else if (getIntent().hasExtra(ProductDetailFragment.ARG_ITEM_BARCODE)){
-            //TODO
+            mProduct = findOrCreateProduct(getIntent().getStringExtra(ProductDetailFragment.ARG_ITEM_BARCODE));
         }
 
         if (mProduct != null){
@@ -101,6 +101,20 @@ public class AddEditProductActivity extends AppCompatActivity {
         productDao.open();
 
         return productDao.findById(id);
+    }
+
+    protected Product findOrCreateProduct(String barcode){
+        productDao.open();
+
+        Product p = productDao.findByBarcode(barcode);
+        if (p == null){
+            p = new Product();
+            p.setBarcode(barcode);
+            long id = productDao.insert(p);
+            return loadProduct(id);
+        }
+
+        return p;
     }
 
 }
