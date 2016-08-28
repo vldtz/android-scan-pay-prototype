@@ -1,8 +1,13 @@
 package com.vladc.android.mobileerptool.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.vladc.android.mobileerptool.R;
+import com.vladc.android.mobileerptool.dao.entity.ProductImage;
+import com.vladc.android.mobileerptool.dao.impl.ProductImageDaoImpl;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * An activity representing a single Product detail screen. This
@@ -19,6 +31,9 @@ import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
  * in a {@link ProductListActivity}.
  */
 public class ProductDetailActivity extends AppCompatActivity {
+
+    String mCurrentPhotoPath;
+    Long mCurrentProductId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +62,14 @@ public class ProductDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putLong(ProductDetailFragment.ARG_ITEM_ID,
-                    getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID,0L));
+                    getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L));
             ProductDetailFragment fragment = new ProductDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.product_detail_container, fragment)
                     .commit();
+
+            mCurrentProductId = getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L);
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -60,9 +77,17 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent editItemIntent = new Intent(getApplicationContext(), AddEditProductActivity.class);
-                editItemIntent.putExtra(ProductDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID,0L));
+                editItemIntent.putExtra(ProductDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L));
 
                 startActivity(editItemIntent);
+            }
+        });
+
+        FloatingActionButton fabCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
+        fabCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTakePictureIntent();
             }
         });
     }
@@ -81,5 +106,63 @@ public class ProductDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+//                TODO...
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, MainActivity.REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    // Get the results:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MainActivity.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            ProductImageDaoImpl productImageDao = new ProductImageDaoImpl(this);
+            productImageDao.open();
+
+            ProductImage pi = new ProductImage();
+            pi.setImagePath(mCurrentPhotoPath);
+            pi.setProductId(mCurrentProductId);
+            pi.setImage(imageBitmap);
+//            mImageView.setImageBitmap(imageBitmap);
+//            mImageView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }

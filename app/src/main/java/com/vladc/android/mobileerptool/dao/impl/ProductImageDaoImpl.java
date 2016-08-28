@@ -50,10 +50,10 @@ public class ProductImageDaoImpl extends AbstractDaoImpl<Long,ProductImage> impl
     }
 
     @Override
-    public ProductImage findByProductId(Long productId) {
+    public List<ProductImage> findByProductId(Long productId) {
         String selection = ProductImagesTable.COLUMN_NAME_PRODUCT_ID + " = ?";
         String[] selectionArgs = {String.valueOf(productId)};
-        return fetchOne(selection, selectionArgs, null, null, null);
+        return fetchList(selection, selectionArgs, null, null, null);
     }
 
     @Override
@@ -86,6 +86,7 @@ public class ProductImageDaoImpl extends AbstractDaoImpl<Long,ProductImage> impl
         ContentValues values = new ContentValues();
         values.put(ProductImagesTable.COLUMN_NAME_PRODUCT_ID, productImage.getProductId());
         values.put(ProductImagesTable.COLUMN_NAME_IMAGE, DbBitmapUtil.getBytes(productImage.getImage()));
+        values.put(ProductImagesTable.COLUMN_NAME_IMAGE_PATH, productImage.getImagePath());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = mDb.insert(ProductImagesTable.TABLE_NAME, null, values);
@@ -98,7 +99,7 @@ public class ProductImageDaoImpl extends AbstractDaoImpl<Long,ProductImage> impl
         ContentValues values = new ContentValues();
         values.put(ProductImagesTable.COLUMN_NAME_PRODUCT_ID, productImage.getProductId());
         values.put(ProductImagesTable.COLUMN_NAME_IMAGE, DbBitmapUtil.getBytes(productImage.getImage()));
-
+        values.put(ProductImagesTable.COLUMN_NAME_IMAGE_PATH, productImage.getImagePath());
 
         // Which row to update, based on the title
         String selection = ProductImagesTable.COLUMN_NAME_ID + " = ?";
@@ -137,6 +138,7 @@ public class ProductImageDaoImpl extends AbstractDaoImpl<Long,ProductImage> impl
         entity.setId(cursor.getLong(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_ID)));
         entity.setProductId(cursor.getLong(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_PRODUCT_ID)));
         entity.setImage(DbBitmapUtil.getImage(cursor.getBlob(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_IMAGE))));
+        entity.setImagePath(cursor.getString(cursor.getColumnIndex(ProductImagesTable.COLUMN_NAME_IMAGE_PATH)));
 
         return entity;
     }

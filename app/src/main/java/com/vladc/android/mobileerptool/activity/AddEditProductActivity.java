@@ -1,5 +1,7 @@
 package com.vladc.android.mobileerptool.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -67,7 +69,7 @@ public class AddEditProductActivity extends AppCompatActivity {
                     saveProduct();
                     CharSequence text = "Produs salvat";
                     Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-                    onBackPressed();
+                    gotoProductDetails(view.getContext());
                 } catch (Exception e){
                     Snackbar.make(view, "Eroare", Snackbar.LENGTH_LONG).setAction("Action",null).show();
                 }
@@ -76,6 +78,12 @@ public class AddEditProductActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+    }
+
+    private void gotoProductDetails(Context context) {
+        Intent intent = new Intent(context, ProductDetailActivity.class);
+        intent.putExtra(ProductDetailFragment.ARG_ITEM_ID, mProduct.getId());
+        context.startActivity(intent);
     }
 
     protected void saveProduct(){

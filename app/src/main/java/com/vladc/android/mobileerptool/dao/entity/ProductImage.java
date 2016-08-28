@@ -11,6 +11,7 @@ public class ProductImage {
     private Long productId;
     private Product product;
     private Bitmap image;
+    private String imagePath;
 
     public Long getId() {
         return id;
@@ -42,5 +43,13 @@ public class ProductImage {
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

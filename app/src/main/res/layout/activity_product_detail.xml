@@ -49,5 +49,14 @@
         android:src="@android:drawable/ic_menu_edit"
         app:layout_anchor="@+id/product_detail_container"
         app:layout_anchorGravity="top|end" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_menu_camera"
+        app:layout_anchor="@+id/fab"
+        app:layout_anchorGravity="center|start" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -49,17 +49,20 @@ public final class MobileErpContract {
         public static final String COLUMN_NAME_ID = "pi_id";
         public static final String COLUMN_NAME_PRODUCT_ID = "pi_p_id";
         public static final String COLUMN_NAME_IMAGE = "pi_image_data";
+        public static final String COLUMN_NAME_IMAGE_PATH = "pi_image_path";
 
         public static final String[] COLUMNS = {
                 COLUMN_NAME_ID,
                 COLUMN_NAME_PRODUCT_ID,
                 COLUMN_NAME_IMAGE,
+                COLUMN_NAME_IMAGE_PATH
         };
 
         public static final String SQL_CREATE_TABLE =
                 "CREATE TABLE " + ProductImagesTable.TABLE_NAME + " (" +
                         ProductImagesTable.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                         ProductImagesTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + COMMA_SEP +
+                        ProductImagesTable.COLUMN_NAME_IMAGE_PATH + TEXT_TYPE + COMMA_SEP +
                         ProductImagesTable.COLUMN_NAME_IMAGE + BLOB_TYPE + COMMA_SEP +
                         "FOREIGN KEY(" + ProductImagesTable.COLUMN_NAME_PRODUCT_ID + ") " +
                         "REFERENCES " + ProductsTable.TABLE_NAME + "(" + ProductsTable.COLUMN_NAME_ID + ")" +

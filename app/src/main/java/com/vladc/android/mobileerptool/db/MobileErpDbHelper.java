@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MobileErpDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "MobileErp.db";
 
     public MobileErpDbHelper(Context context) {
@@ -20,13 +20,17 @@ public class MobileErpDbHelper extends SQLiteOpenHelper {
         db.execSQL(MobileErpContract.ProductImagesTable.SQL_CREATE_TABLE);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == newVersion) return;
+        if (oldVersion >= newVersion) return;
 
         switch (newVersion){
             case 2:
                 db.execSQL(MobileErpContract.ProductsTable.SQL_DROP_TABLE);
                 db.execSQL(MobileErpContract.ProductImagesTable.SQL_DROP_TABLE);
                 onCreate(db);
+                break;
+            case 3:
+                db.execSQL(MobileErpContract.ProductImagesTable.SQL_DROP_TABLE);
+                db.execSQL(MobileErpContract.ProductImagesTable.SQL_CREATE_TABLE);
                 break;
             default: return;
         }
