@@ -3,6 +3,7 @@ package com.vladc.android.mobileerptool.dao.impl;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,10 +23,22 @@ import static com.vladc.android.mobileerptool.db.MobileErpContract.ProductEntry;
  */
 public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements ProductDao {
 
-    MobileErpDbHelper mDbHelper;
+    private Context mContext;
+    private MobileErpDbHelper mDbHelper;
+    private SQLiteDatabase mDb;
 
-    ProductDaoImpl(Context context) {
-        mDbHelper = new MobileErpDbHelper(context);
+    public ProductDaoImpl(Context context) {
+        mContext = context;
+    }
+
+    public ProductDaoImpl open() throws SQLException {
+        mDbHelper = new MobileErpDbHelper(mContext);
+        mDb = mDbHelper.getWritableDatabase();
+        return this;
+    }
+
+    public void close() {
+        mDbHelper.close();
     }
 
     @Override
@@ -44,13 +57,12 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
 
     @Override
     public List<Product> findAll() {
-        return null;
+        return fetchList(null,null,null,null,null);
     }
 
     @Nullable
     private Product fetchOne(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        Cursor cursor = mDb.query(
                 ProductEntry.TABLE_NAME,                     // The table to query
                 ProductEntry.COLUMNS,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
@@ -69,42 +81,35 @@ public class ProductDaoImpl extends AbstractDaoImpl<Long,Product> implements Pro
 
     @Override
     public Long insert(Product product){
-        // Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_NAME_BARCODE, product.getBarcode());
         values.put(ProductEntry.COLUMN_NAME_NAME, product.getName());
-        values.put(ProductEntry.COLUMN_NAME_NAME, product.getQuantity());
+        values.put(ProductEntry.COLUMN_NAME_QUANTITY, product.getQuantity());
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
+        long newRowId = mDb.insert(ProductEntry.TABLE_NAME, null, values);
         return newRowId;
     }
 
     @Override
     public Long update(Product product){
-        // Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_NAME_BARCODE, product.getBarcode());
         values.put(ProductEntry.COLUMN_NAME_NAME, product.getName());
-        values.put(ProductEntry.COLUMN_NAME_NAME, product.getQuantity());
+        values.put(ProductEntry.COLUMN_NAME_QUANTITY, product.getQuantity());
 
         // Which row to update, based on the title
         String selection = ProductEntry.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {String.valueOf(product.getId())};
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.update(ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        long newRowId = mDb.update(ProductEntry.TABLE_NAME, values, selection, selectionArgs);
         return newRowId;
     }
 
     private List<Product> fetchList(String selection, String[] selectionArgs, String group, String filter, String sortOrder){
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        Cursor cursor = mDb.query(
                 ProductEntry.TABLE_NAME,                     // The table to query
                 ProductEntry.COLUMNS,                        // The columns to return
                 selection,                                // The columns for the WHERE clause

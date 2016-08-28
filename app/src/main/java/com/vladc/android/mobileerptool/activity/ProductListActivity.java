@@ -5,19 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.dao.entity.Product;
-import com.vladc.android.mobileerptool.fragment.ProductContent;
+import com.vladc.android.mobileerptool.dao.impl.ProductDaoImpl;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
 
 import java.util.List;
@@ -37,6 +36,8 @@ public class ProductListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private SimpleCursorAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +49,11 @@ public class ProductListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final Intent addNewIntent = new Intent(this,AddEditProductActivity.class);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(addNewIntent);
             }
         });
 
@@ -67,10 +68,15 @@ public class ProductListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(ProductContent.ITEMS));
+        ProductDaoImpl productDao = new ProductDaoImpl(this);
+        productDao.open();
+        List<Product> items = productDao.findAll();
+        productDao.close();
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(items));
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -127,18 +133,18 @@ public class ProductListActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final TextView mIdView;
-            public final EditText mNameView;
+            public final TextView mNameView;
             public final TextView mBarcodeView;
-            public final EditText mQuantityView;
+            public final TextView mQuantityView;
             public Product mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mIdView = (TextView) view.findViewById(R.id.id);
-                mNameView = (EditText) view.findViewById(R.id.name);
+                mNameView = (TextView) view.findViewById(R.id.name);
                 mBarcodeView = (TextView) view.findViewById(R.id.barcode);
-                mQuantityView = (EditText) view.findViewById(R.id.quantity);
+                mQuantityView = (TextView) view.findViewById(R.id.quantity);
             }
 
             @Override

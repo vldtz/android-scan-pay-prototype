@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".fragment.ProductDetailFragment"
+    tools:context="com.vladc.android.mobileerptool.activity.AddEditProductActivity"
+    tools:showIn="@layout/activity_add_edit_product"
     android:orientation="vertical">
 
     <ScrollView
@@ -31,7 +33,7 @@
                 android:id="@+id/label_id"
                 android:labelFor="@+id/field_id" />
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -46,7 +48,7 @@
                 android:id="@+id/label_barcode"
                 android:labelFor="@+id/field_barcode" />
 
-            <TextView
+            <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -61,7 +63,7 @@
                 android:id="@+id/label_name"
                 android:labelFor="@+id/field_name" />
 
-            <TextView
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/field_name" />
@@ -73,7 +75,7 @@
                 android:text="Cantitate"
                 android:id="@+id/label_quantity" />
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
