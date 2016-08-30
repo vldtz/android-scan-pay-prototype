@@ -4,7 +4,7 @@ import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.data.EntityDao;
 import com.vladc.android.mobileerptool.shared.service.BaseDto;
 
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.Serializable;
@@ -22,11 +22,8 @@ public abstract class RestEntityDaoImpl<T extends BaseDto<PK>, PK extends Serial
     public RestEntityDaoImpl() {
         super();
         this.entityClass = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);        
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-//        requestFactory.setHttpClient(MobileERPApplication.getHttpClient());
-        //TODO decide best value for http timeout and make it a constant (we also needed for images!)
-        requestFactory.setConnectTimeout(10000);
-        this.template = new RestTemplate(true, requestFactory);
+        this.template = new RestTemplate();
+        this.template.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     }
     
     protected final String getBaseUrl() {

@@ -6,6 +6,8 @@
         android:required="true" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" android:required="true" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" android:required="true" />
 
     <application
         android:name=".MobileERPApplication"
@@ -30,7 +32,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.vladc.android.mobileerptool.activity.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <activity

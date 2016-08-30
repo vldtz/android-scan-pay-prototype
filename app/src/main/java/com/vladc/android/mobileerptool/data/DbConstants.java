@@ -40,7 +40,7 @@ public class DbConstants {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 COLUMN_CLOSED_DATE + " TIMESTAMP DEFAULT NULL, " +
-                COLUMN_EXTERNAL_ID + " TEXT, " +
+                COLUMN_EXTERNAL_ID + " TEXT " +
             " )";
 
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -66,7 +66,7 @@ public class DbConstants {
                 COLUMN_CART_ID + " INTEGER, " +
                 COLUMN_PRODUCT_ID + " INTEGER, " +
                 COLUMN_QUANTITY + " INTEGER DEFAULT 1, " +
-                "FOREIGN KEY(" + COLUMN_CART_ID + ") REFERENCES " + CartTable.TABLE_NAME + "(" + CartTable.COLUMN_ID + ")  ON DELETE CASCADE" +
+                "FOREIGN KEY(" + COLUMN_CART_ID + ") REFERENCES " + CartTable.TABLE_NAME + "(" + CartTable.COLUMN_ID + ")  ON DELETE CASCADE, " +
                 "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductTable.TABLE_NAME + "(" + ProductTable.COLUMN_ID + ")  ON DELETE CASCADE" +
             " )";
 

@@ -165,9 +165,9 @@ public class MainActivity extends AppCompatActivity
     // Get the results:
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_BARCODE_CAPTURE && result != null) {
-            if (result.getContents() == null) {
+        final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BARCODE_CAPTURE && scanResult != null) {
+            if (scanResult.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 /*
@@ -192,11 +192,11 @@ public class MainActivity extends AppCompatActivity
                         final Context context = MobileERPApplication.getContext();
                         Intent productDetails = new Intent(context, ProductDetailActivity.class);
                         productDetails.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, result);
-                        Toast.makeText(context, "Scanned: " + result.getBarcode(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Scanned: " + scanResult.getContents(), Toast.LENGTH_LONG).show();
 
                         startActivity(productDetails);
                     }
-                }.execute(result.getContents());
+                }.execute(scanResult.getContents());
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

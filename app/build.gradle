@@ -17,10 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    useLibrary 'org.apache.http.legacy'
+
     packagingOptions {
         pickFirst  'META-INF/license.txt'
         pickFirst  'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
@@ -55,5 +58,6 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
-//    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+    compile 'org.apache.httpcomponents:httpclient:4.2.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
 }

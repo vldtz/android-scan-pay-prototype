@@ -29,6 +29,7 @@ public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
                 DbConstants.CartTable.COLUMN_ID,
                 DbConstants.CartTable.COLUMN_DATE,
                 DbConstants.CartTable.COLUMN_CLOSED_DATE,
+                DbConstants.CartTable.COLUMN_EXTERNAL_ID,
         };
     }
 
@@ -38,6 +39,7 @@ public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
         entity.setId(c.getLong(0));
         entity.setDateCreated(new Date(c.getLong(1)));
         entity.setDateClosed(!c.isNull(2) ? new Date(c.getLong(2)) : null);
+        entity.setExternalId(c.getString(3));
         return entity;
     }
 
@@ -47,6 +49,7 @@ public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
         //putValue(contentValues, DbConstants.StudentTable.COLUMN_ID, entity.getId());
         putValue(contentValues, DbConstants.CartTable.COLUMN_DATE, entity.getDateCreated());
         putValue(contentValues, DbConstants.CartTable.COLUMN_CLOSED_DATE, entity.getDateClosed());
+        putValue(contentValues, DbConstants.CartTable.COLUMN_EXTERNAL_ID, entity.getExternalId());
         return contentValues;
     }
 }
