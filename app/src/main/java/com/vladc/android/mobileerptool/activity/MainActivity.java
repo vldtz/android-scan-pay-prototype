@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mImageView = (ImageView) findViewById(R.id.scannedImageView);
-        mImageView.setVisibility(View.GONE);
         ImageButton barcodeMainBtn = (ImageButton) findViewById(R.id.barcodeScanBtn);
         barcodeMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,13 +64,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ImageButton gotoListActivityBtn = (ImageButton) findViewById(R.id.gotoListBtn);
-        gotoListActivityBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchListActivity();
-            }
-        });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         /*fab.setOnClickListener(new View.OnClickListener() {

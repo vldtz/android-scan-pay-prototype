@@ -6,19 +6,15 @@
             android:id="@+id/nav_scan_barcode"
             android:icon="@drawable/ic_menu_barcode"
             android:title="Scaneaza cod bare" />
-        <ite
-            android:id="@+id/nav_scan_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Cauta produs" />
         <item
             android:id="@+id/nav_product_list"
             android:icon="@drawable/ic_menu_list"
             android:title="Lista produse" />
-       <!-- <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
+       <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Setari" />
+        <!-- <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools" />-->
