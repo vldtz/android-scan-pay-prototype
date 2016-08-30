@@ -23,9 +23,17 @@
             android:id="@+id/barcodeScanBtn"
             android:layout_margin="15dp"
             android:background="@drawable/btn_add_picture"
-            android:visibility="visible"
             android:src="@drawable/barcode_large"
-            android:nestedScrollingEnabled="false"
+            android:minHeight="250dp"
+            android:minWidth="250dp" />
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:id="@+id/myCartBtn"
+            android:layout_margin="15dp"
+            android:background="@drawable/btn_add_picture"
+            android:src="@drawable/shopping_cart"
             android:minHeight="250dp"
             android:minWidth="250dp" />
 
