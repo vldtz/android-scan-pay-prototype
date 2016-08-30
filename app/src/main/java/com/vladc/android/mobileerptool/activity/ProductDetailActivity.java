@@ -1,11 +1,7 @@
 package com.vladc.android.mobileerptool.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.vladc.android.mobileerptool.R;
-import com.vladc.android.mobileerptool.dao.entity.ProductImage;
-import com.vladc.android.mobileerptool.dao.impl.ProductImageDaoImpl;
+import com.vladc.android.mobileerptool.data.db.entities.Product;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * An activity representing a single Product detail screen. This
@@ -31,7 +21,9 @@ import java.util.Date;
  */
 public class ProductDetailActivity extends AppCompatActivity {
 
-    String mCurrentPhotoPath;
+    public static final String ARG_ITEM_BARCODE = "item_barcode";
+
+    Product mProduct;
     Long mCurrentProductId;
 
     @Override
@@ -59,34 +51,35 @@ public class ProductDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putLong(ProductDetailFragment.ARG_ITEM_ID,
-                    getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L));
-            ProductDetailFragment fragment = new ProductDetailFragment();
-            fragment.setArguments(arguments);
+            mProduct = (Product) getIntent().getSerializableExtra(ProductDetailFragment.PRODUCT_OBJ_KEY);
+            ProductDetailFragment fragment = ProductDetailFragment.newInstance(mProduct);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.product_detail_container, fragment)
                     .commit();
 
-            mCurrentProductId = getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L);
+            mCurrentProductId = getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L);
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent editItemIntent = new Intent(getApplicationContext(), AddEditProductActivity.class);
-                editItemIntent.putExtra(ProductDetailFragment.ARG_ITEM_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_ITEM_ID, 0L));
+                editItemIntent.putExtra(ProductDetailFragment.ARG_PRODUCT_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L));
 
                 startActivity(editItemIntent);
             }
-        });
+        });*/
+        fab.setVisibility(View.GONE);
 
-        FloatingActionButton fabCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
-        fabCamera.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabAddToCart = (FloatingActionButton) findViewById(R.id.fab_shopping_cart);
+        fabAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dispatchTakePictureIntent();
+//                Intent editItemIntent = new Intent(getApplicationContext(), AddEditProductActivity.class);
+//                editItemIntent.putExtra(ProductDetailFragment.ARG_PRODUCT_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L));
+//
+//                startActivity(editItemIntent);
             }
         });
     }
@@ -105,68 +98,5 @@ public class ProductDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-//                TODO...
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, MainActivity.REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    // Get the results:
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MainActivity.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            ProductImageDaoImpl productImageDao = new ProductImageDaoImpl(this);
-            productImageDao.open();
-
-            ProductImage pi = new ProductImage();
-            pi.setImagePath(mCurrentPhotoPath);
-            pi.setProductId(mCurrentProductId);
-            productImageDao.insert(pi);
-            productImageDao.close();
-//            pi.setImage(imageBitmap);
-//            mImageView.setImageBitmap(imageBitmap);
-//            mImageView.setVisibility(View.VISIBLE);
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            final File file = new File(mCurrentPhotoPath);
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 }

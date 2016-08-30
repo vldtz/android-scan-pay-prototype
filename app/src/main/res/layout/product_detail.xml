@@ -24,62 +24,9 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="ID:"
-                android:id="@+id/label_id"
-                android:labelFor="@+id/field_id" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="123"
-                android:id="@+id/field_id" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Cod bare"
-                android:id="@+id/label_barcode"
-                android:labelFor="@+id/field_barcode" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="12093801282390"
-                android:id="@+id/field_barcode" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Nume produs"
-                android:id="@+id/label_name"
-                android:labelFor="@+id/field_name" />
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/field_name" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Cantitate"
-                android:id="@+id/label_quantity" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/field_quantity"
-                android:text="12" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -87,11 +34,6 @@
                 android:layout_height="match_parent"
                 tools:context="{relativePackage}.${activityClass}"
                 android:orientation="vertical" >
-
-                <Gallery
-                    android:id="@+id/thumb_gallery"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
 
                 <ImageView
                     android:id="@+id/image_large"

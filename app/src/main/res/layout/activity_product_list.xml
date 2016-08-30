@@ -27,7 +27,14 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/product_list" />
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView2" >
+
+            <include layout="@layout/product_list" />
+        </ScrollView>
+
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton

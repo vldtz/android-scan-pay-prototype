@@ -1,9 +1,10 @@
 package com.vladc.android.mobileerptool.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +24,23 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.R;
+import com.vladc.android.mobileerptool.data.db.entities.Product;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
+import com.vladc.android.mobileerptool.shared.service.ProductServiceImpl;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     static final int REQUEST_BARCODE_CAPTURE = IntentIntegrator.REQUEST_CODE;
+    /**
+     * mLoader to display while data is fetched from server/db
+     */
+    private ProgressDialog mLoader = null;
+
     private ImageView mImageView;
 
     @Override
@@ -52,14 +63,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 initBarcodeScan();
-            }
-        });
-
-        ImageButton imageScanBtn = (ImageButton) findViewById(R.id.imageScanBtn);
-        imageScanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchTakePictureIntent();
             }
         });
 
@@ -163,30 +166,78 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
-            mImageView.setVisibility(View.VISIBLE);
-        } else if (requestCode == REQUEST_BARCODE_CAPTURE && result != null) {
-            if(result.getContents() == null) {
+        if (requestCode == REQUEST_BARCODE_CAPTURE && result != null) {
+            if (result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-                Intent addEditProduct = new Intent(this, AddEditProductActivity.class);
-                addEditProduct.putExtra(ProductDetailFragment.ARG_ITEM_BARCODE, result.getContents());
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                /*
+                * Shows a loader, fetch product hide loader when done and goto product details
+                */
+                new AsyncTask<String, Void, Product>() {
+                    @Override
+                    protected void onPreExecute() {
+                        displayDialog(); /* watch out, this is on main thread! */
+                    }
 
-                startActivity(addEditProduct);
+                    @Override
+                    protected Product doInBackground(String... params) {
+                        final Context context = MobileERPApplication.getContext();
+                        ProductServiceImpl productService = new ProductServiceImpl(context);
+                        return productService.getProductCachedByBarcode(params[0]);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Product result) {
+                        closeDialog();
+                        final Context context = MobileERPApplication.getContext();
+                        Intent productDetails = new Intent(context, ProductDetailActivity.class);
+                        productDetails.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, result);
+                        Toast.makeText(context, "Scanned: " + result.getBarcode(), Toast.LENGTH_LONG).show();
+
+                        startActivity(productDetails);
+                    }
+                }.execute(result.getContents());
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    /**
+     * Useful function to init the mLoader
+     */
+    private void displayDialog() {
+        if (mLoader == null) {
+            final String title = getResources().getString(R.string.generic_load_title);
+            final String message = getResources().getString(R.string.generic_load_message);
+            mLoader = ProgressDialog.show(MainActivity.this, title, message, true, false);
+        } else {
+            if (!mLoader.isShowing()) {
+                mLoader.show();
+            }
         }
+        Log.d(TAG, "Loader opened, have fun");
+    }
+
+    /**
+     * Useful function to cancel the mLoader
+     */
+    private void closeDialog() {
+        if (mLoader != null) {
+            mLoader.dismiss();
+        }
+        Log.d(TAG, "Loader closed, have fun");
+    }
+
+    @Override
+    protected void onStop() {
+        closeDialog();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        closeDialog();
+        super.onDestroy();
     }
 }
