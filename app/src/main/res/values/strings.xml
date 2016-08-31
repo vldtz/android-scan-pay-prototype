@@ -1,14 +1,13 @@
 <resources>
-    <string name="app_name">MobileERPTool</string>
+    <string name="app_name">Mobile Scan&amp;Pay Tool</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="title_product_list">Products</string>
-    <string name="title_product_detail">Product Detail</string>
-    <string name="title_activity_add_edit_product">AddEditProductActivity</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="action_settings">Setari</string>
+    <string name="title_product_list">Lista produse</string>
+    <string name="title_product_detail">Informatii Produs</string>
+    <string name="title_activity_settings">Setari</string>
 
     <!-- Strings related to Settings -->
 

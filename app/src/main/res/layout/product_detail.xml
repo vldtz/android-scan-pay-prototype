@@ -21,31 +21,39 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/field_name" />
+                android:id="@+id/field_name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Product name placeholder" />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="{relativePackage}.${activityClass}"
-                android:orientation="vertical" >
+                android:layout_height="wrap_content"
+                android:id="@+id/field_description"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie tellus est, in commodo erat vestibulum et. Cras porttitor erat sed convallis volutpat. Fusce eu venenatis est. Proin blandit egestas lectus, condimentum hendrerit massa consequat a. Quisque a cursus purus. Sed consequat varius rhoncus. Quisque cursus egestas turpis, vitae volutpat neque ultricies ac. Mauris cursus augue arcu, at lobortis nibh convallis sodales. Sed pellentesque dolor sed urna laoreet scelerisque." />
 
-                <ImageView
-                    android:id="@+id/image_large"
-                    android:layout_width="215dp"
-                    android:layout_height="315dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="#cfcfcf"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"/>
-            </LinearLayout>
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/webView" />
+
+            <ImageView
+                android:id="@+id/image_large"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="#cfcfcf"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:contentDescription="Product image" />
+
         </LinearLayout>
     </ScrollView>
 
