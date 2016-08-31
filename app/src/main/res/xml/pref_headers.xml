@@ -1,6 +1,11 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- These settings headers are only used on tablets. -->
+    <header
+        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_warning_black"
+        android:title="@string/pref_header_warning"
+        android:summary="@string/pref_header_warning_summary"/>
 
     <header
         android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$GeneralPreferenceFragment"

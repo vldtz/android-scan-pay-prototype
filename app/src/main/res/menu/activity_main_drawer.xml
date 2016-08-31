@@ -14,22 +14,27 @@
             android:id="@+id/nav_shopping_history"
             android:icon="@drawable/ic_history_black"
             android:title="Istoric cumparaturi" />
+        <!--
         <item
             android:id="@+id/nav_product_list"
             android:icon="@drawable/ic_menu_list"
             android:title="Lista produse"
-            android:visible="false"/>
-       <item
+            android:visible="false" />
+        -->
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
             android:title="Setari" />
-        <!-- <item
+        <!--
+        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />-->
+            android:title="Tools" />
+        -->
     </group>
 
-    <!--<item android:title="Communicate">
+    <!--
+    <item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -40,6 +45,6 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send" />
         </menu>
-    </item>-->
-
+    </item>
+    -->
 </menu>

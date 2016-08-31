@@ -10,6 +10,9 @@
     <string name="title_activity_settings">Setari</string>
 
     <!-- Strings related to Settings -->
+    <string name="pref_header_warning">Avertizari</string>
+    <string name="pref_header_warning_summary">Avertizeaza-ma cand produsele contin elemente din lista urmatoare</string>
+
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
