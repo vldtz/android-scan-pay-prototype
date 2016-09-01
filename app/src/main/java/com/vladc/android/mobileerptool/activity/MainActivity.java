@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void launchListActivity() {
-        Intent intent = new Intent(this, ProductListActivity.class);
+        Intent intent = new Intent(this, ShoppingCartActivity.class);
         startActivity(intent);
     }
 

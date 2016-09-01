@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ProductListActivity"
+            android:name=".activity.ShoppingCartActivity"
             android:label="@string/title_product_list"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -38,11 +38,11 @@
         <activity
             android:name=".activity.ProductDetailActivity"
             android:label="@string/title_product_detail"
-            android:parentActivityName=".activity.ProductListActivity"
+            android:parentActivityName=".activity.ShoppingCartActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.ProductListActivity" />
+                android:value=".activity.ShoppingCartActivity" />
         </activity>
         <activity
             android:name=".activity.SettingsActivity"

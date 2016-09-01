@@ -17,7 +17,7 @@ import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
  * An activity representing a single Product detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link ProductListActivity}.
+ * in a {@link ShoppingCartActivity}.
  */
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -94,7 +94,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, ProductListActivity.class));
+            navigateUpTo(new Intent(this, ShoppingCartActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

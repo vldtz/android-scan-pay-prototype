@@ -16,7 +16,7 @@ public class ProductRestDaoImpl extends RestEntityDaoImpl<ProductDto, Long> {
     
     public ProductDto getByBarcode(String barcode) {
         URI targetUrl = UriComponentsBuilder.fromUriString(getBaseUrl())
-                .pathSegment("barcode", barcode)
+                .pathSegment(barcode)
                 .build()
                 .toUri();
         ProductDto result = template.getForObject(targetUrl, ProductDto.class);

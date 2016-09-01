@@ -30,7 +30,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ProductListActivity extends AppCompatActivity {
+public class ShoppingCartActivity extends AppCompatActivity {
 
     private SimpleCursorAdapter adapter;
 
@@ -63,10 +63,10 @@ public class ProductListActivity extends AppCompatActivity {
     private void initBarcodeScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setOrientationLocked(false);
-//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        integrator.setBeepEnabled(true);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES);
         integrator.setPrompt("Scanati codul de bare");
 //            integrator.setCameraId(0);  // Use a specific camera of the device
-        integrator.setBeepEnabled(false);
 //            integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
     }

@@ -13,13 +13,13 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.activity.ProductDetailActivity;
-import com.vladc.android.mobileerptool.activity.ProductListActivity;
+import com.vladc.android.mobileerptool.activity.ShoppingCartActivity;
 import com.vladc.android.mobileerptool.data.db.entities.Product;
 
 
 /**
  * A fragment representing a single Product detail screen.
- * This fragment is either contained in a {@link ProductListActivity}
+ * This fragment is either contained in a {@link ShoppingCartActivity}
  * in two-pane mode (on tablets) or a {@link ProductDetailActivity}
  * on handsets.
  */
