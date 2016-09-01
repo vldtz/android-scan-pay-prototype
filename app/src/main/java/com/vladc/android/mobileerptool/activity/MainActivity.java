@@ -113,8 +113,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            launchSettingsActivity();
             return true;
         }
 
@@ -133,13 +132,18 @@ public class MainActivity extends AppCompatActivity
             launchShoppingCartActivity();
         } else if (id == R.id.nav_last_checkout){
             launchLastCheckoutActivity();
-        }/* TODO else if (id == R.id.nav_slideshow) {
-
-        }*/
+        } else if (id == R.id.nav_settings){
+            launchSettingsActivity();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void launchSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void launchShoppingCartActivity() {

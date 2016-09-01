@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <MultiSelectListPreference
+        android:defaultValue="@array/pref_ingredients_list_good_defaults"
+        android:entries="@array/pref_ingredients_list_values"
+        android:entryValues="@array/pref_ingredients_list_values"
+        android:key="pref_ingredients_list_good"
+        android:positiveButtonText="@string/save"
+        android:negativeButtonText="@string/cancel"
+        android:title="@string/pref_title_ingredients_list_good" />
+
+    <MultiSelectListPreference
+        android:defaultValue="@array/pref_ingredients_list_bad_defaults"
+        android:entries="@array/pref_ingredients_list_values"
+        android:entryValues="@array/pref_ingredients_list_values"
+        android:key="pref_ingredients_list_bad"
+        android:positiveButtonText="@string/save"
+        android:negativeButtonText="@string/cancel"
+        android:title="@string/pref_title_ingredients_list_bad" />
+
+</PreferenceScreen>

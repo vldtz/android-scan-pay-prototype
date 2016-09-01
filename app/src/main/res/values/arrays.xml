@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_ingredients_list_good_defaults" />
+    <string-array name="pref_ingredients_list_values">
+        <item>cacao</item>
+        <item>arahide</item>
+        <item>lapte</item>
+        <item>oua</item>
+        <item>nuci</item>
+        <item>peste</item>
+        <item>grau</item>
+        <item>soia</item>
+    </string-array>
+    <string-array name="pref_ingredients_list_bad_defaults" />
+    <string-array name="pref_info_categories_list_values" >
+        <item>description</item>
+        <item>ingredients</item>
+        <item>storing_conditions</item>
+        <item>promotions</item>
+        <item>producer</item>
+        <item>producer-url</item>
+        <item>image</item>
+    </string-array>
+    <string-array name="pref_info_categories_list_titles">
+        <item>Descriere</item>
+        <item>Ingrediente</item>
+        <item>Conditii de pastrare</item>
+        <item>Promotii</item>
+        <item>Producator</item>
+        <item>Website producator</item>
+        <item>Imagine</item>
+    </string-array>
+</resources>

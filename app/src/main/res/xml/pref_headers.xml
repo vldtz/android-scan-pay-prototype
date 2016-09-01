@@ -1,25 +1,15 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- These settings headers are only used on tablets. -->
     <header
-        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$WarningsPreferenceFragment"
         android:icon="@drawable/ic_warning_black"
         android:title="@string/pref_header_warning"
         android:summary="@string/pref_header_warning_summary"/>
 
     <header
-        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$InfoCategoriesPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_general" />
-
-    <header
-        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$NotificationPreferenceFragment"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/pref_header_notifications" />
-
-    <header
-        android:fragment="com.vladc.android.mobileerptool.activity.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
+        android:title="@string/pref_header_info"
+        android:summary="@string/pref_header_info_summary"/>
 
 </preference-headers>
