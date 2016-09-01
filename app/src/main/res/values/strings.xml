@@ -74,4 +74,8 @@
     <string name="generic_load_message">Data is loading</string>
     <string name="label_product_description">Descriere produs</string>
     <string name="label_product_ingredients">Ingrediente</string>
+    <string name="title_activity_last_checkout">Ultima plata</string>
+    <string name="checkout_text_info">Comunicati casierului urmatorul cod al comenzii:</string>
+    <string name="total_sum">Total</string>
+    <string name="no_last_checkout_text">Nu ati efectuat cumparaturi inca.</string>
 </resources>

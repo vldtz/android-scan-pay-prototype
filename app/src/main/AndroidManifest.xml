@@ -69,7 +69,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activity.LastCheckoutActivity"></activity>
+        <activity android:name=".activity.LastCheckoutActivity"
+            android:label="@string/title_activity_last_checkout"
+            android:parentActivityName=".activity.MainActivity"></activity>
     </application>
 
 </manifest>

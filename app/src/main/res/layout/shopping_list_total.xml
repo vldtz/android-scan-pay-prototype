@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Total"
+            android:text="@string/total_sum"
             android:id="@+id/total_label"
             android:paddingLeft="3dp"
             android:elegantTextHeight="false"

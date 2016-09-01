@@ -127,6 +127,17 @@ public class CartServiceImpl {
         return result;
     }
 
+    public ShoppingCart getLastCheckout() {
+        Cart cart = cartDbDao.getLastClosed();
+
+        if (cart == null) return  null;
+
+        ShoppingCart sc = new ShoppingCart(cart);
+        loadCartProducts(sc);
+
+        return sc;
+    }
+
     public boolean checkoutCurrentCart(){
         ShoppingCart cart = getCurrentShoppingCart();
 
