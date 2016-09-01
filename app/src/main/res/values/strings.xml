@@ -28,4 +28,16 @@
     <string name="save">Salveaza</string>
     <string name="cancel">Anuleaza</string>
     <string name="pref_title_info_categories">Categorii informatii</string>
+    <string name="pref_title_info_show_empty">Afiseaza categorii goale</string>
+    <string name="yes">Da</string>
+    <string name="no">Nu</string>
+    <string name="default_empty"></string>
+    <!--<string name="default_empty">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie tellus est, in commodo erat vestibulum et. Cras porttitor erat sed convallis volutpat. Fusce eu venenatis est. Proin blandit egestas lectus, condimentum hendrerit massa consequat a. Quisque a cursus purus. Sed consequat varius rhoncus. Quisque cursus egestas turpis, vitae volutpat neque ultricies ac. Mauris cursus augue arcu, at lobortis nibh convallis sodales. Sed pellentesque dolor sed urna laoreet scelerisque.</string>-->
+    <string name="label_product_storing_conditions">Conditii de depozitare</string>
+    <string name="label_product_promotions">Promotii</string>
+    <string name="label_product_producer">Producator</string>
+    <string name="label_product_producer_url">Website producator</string>
+    <string name="default_url">http://www.something.com</string>
+    <string name="text_show_more">Afiseaza mai mult</string>
+    <string name="text_show_less">Afiseaza mai putin</string>
 </resources>

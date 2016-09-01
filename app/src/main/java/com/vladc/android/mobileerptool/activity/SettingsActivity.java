@@ -38,6 +38,11 @@ import java.util.Set;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    public static final String PREF_INFO_SHOW_EMPTY_KEY = "pref_info_show_empty";
+    public static final String PREF_INFO_CATEGORIES_KEY = "pref_info_categories";
+    public static final String PREF_INGREDIENTS_LIST_GOOD_KEY = "pref_ingredients_list_good";
+    public static final String PREF_INGREDIENTS_LIST_BAD_KEY = "pref_ingredients_list_bad";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -64,7 +69,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 Set<String> strings = (Set<String>) value;
                 CharSequence[] allTitles = multiSelectListPreference.getEntries();
                 List<CharSequence> selectedTitles = new ArrayList<>();
-                for (String val : strings){
+                for (String val : strings) {
                     selectedTitles.add(allTitles[multiSelectListPreference.findIndexOfValue(val)]);
                 }
                 if (strings.size() == multiSelectListPreference.getEntries().length) {
@@ -74,9 +79,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 } else {
                     preference.setSummary("Nu ati ales niciun element");
                 }
-
-
-            }  else {
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -197,8 +200,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("pref_ingredients_list_good"));
-            bindPreferenceSummaryToValue(findPreference("pref_ingredients_list_bad"));
+            bindPreferenceSummaryToValue(findPreference(PREF_INGREDIENTS_LIST_GOOD_KEY));
+            bindPreferenceSummaryToValue(findPreference(PREF_INGREDIENTS_LIST_BAD_KEY));
         }
 
         @Override
@@ -228,7 +231,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("pref_info_categories"));
+            bindPreferenceSummaryToValue(findPreference(PREF_INFO_CATEGORIES_KEY));
         }
 
         @Override

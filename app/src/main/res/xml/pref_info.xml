@@ -1,5 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+   <CheckBoxPreference
+       android:defaultValue="false"
+       android:key="pref_info_show_empty"
+       android:title="@string/pref_title_info_show_empty"
+       android:summaryOn="@string/yes"
+       android:summaryOff="@string/no"/>
+
    <MultiSelectListPreference
        android:defaultValue="@array/pref_info_categories_list_values"
        android:entries="@array/pref_info_categories_list_titles"
