@@ -2,12 +2,14 @@ package com.vladc.android.mobileerptool.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +52,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private ProgressDialog mLoader = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,16 +71,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
         });
 
         mCartService = new CartServiceImpl(this);
-        mCart = mCartService.getCurrentShoppingCart();
-
-        View recyclerView = findViewById(R.id.product_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-
+        reloadShoppingCart();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        TextView listTotalView = (TextView) findViewById(R.id.shopping_list_total_price);
-        listTotalView.setText(mCart.getCartTotal() + " RON");
     }
 
     private void initBarcodeScan() {
@@ -126,17 +120,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, ProductDetailActivity.class);
-                    intent.putExtra(ProductDetailActivity.SHOW_REMOVE_BUTTON, true);
-                    intent.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, holder.mItem.getProduct());
-                    context.startActivity(intent);
+                    showQuantityDialog(holder.mItem);
                 }
             });
 
             holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, ProductDetailActivity.class);
+                    intent.putExtra(ProductDetailActivity.SHOW_REMOVE_BUTTON, true);
+                    intent.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, holder.mItem.getProduct());
+                    context.startActivity(intent);
                     return true;
                 }
             });
@@ -212,6 +207,46 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
     }
 
+    private void showQuantityDialog(final ProductToCart productToCart){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Cantitate");
+
+        // Set up the input
+        final NumberPicker input = new NumberPicker(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setMinValue(1);
+        input.setMaxValue(1000);
+        input.setWrapSelectorWheel(false);
+        input.setValue(productToCart.getQuantity().intValue());
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mCartService.updateProductQuantityInCurrentCart(productToCart.getProductId(), (long) input.getValue());
+                reloadShoppingCart();
+                dialog.dismiss();
+            }
+        });
+        builder.setNeutralButton("Sterge din cos", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                mCartService.removeProductFromCurrentCart(productToCart.getProductId());
+                reloadShoppingCart();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Anuleaza", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
     /**
      * Useful function to init the mLoader
      */
@@ -248,5 +283,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
     protected void onDestroy() {
         closeDialog();
         super.onDestroy();
+    }
+
+    private void reloadShoppingCart(){
+        mCart = mCartService.getCurrentShoppingCart();
+        View reciclerView = findViewById(R.id.product_list);
+        assert reciclerView != null;
+        setupRecyclerView((RecyclerView) reciclerView);
+
+        TextView listTotalView = (TextView) findViewById(R.id.shopping_list_total_price);
+        listTotalView.setText(mCart.getCartTotal() + " RON");
+
+        FloatingActionButton gotoCheckoutBtn = (FloatingActionButton) findViewById(R.id.fab_checkout);
+        gotoCheckoutBtn.setVisibility(mCart.getProducts().size() > 0 ? View.VISIBLE : View.GONE);
     }
 }
