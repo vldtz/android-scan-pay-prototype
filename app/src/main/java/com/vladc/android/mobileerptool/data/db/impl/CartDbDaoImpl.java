@@ -8,11 +8,27 @@ import com.vladc.android.mobileerptool.data.DbConstants;
 import com.vladc.android.mobileerptool.data.db.entities.Cart;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Vlad.
  */
 public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
+
+    public Cart getCurrent() {
+        String selection = DbConstants.CartTable.COLUMN_EXTERNAL_ID + " IS NULL";
+        String[] selectionArgs = new String[] {};
+        Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, null, null);
+        return loadUniqueAndCloseCursor(cursor);
+    }
+
+    public List<Cart> getAllClosed() {
+        String selection = DbConstants.CartTable.COLUMN_CLOSED_DATE + " IS NOT NULL";
+        String[] selectionArgs = new String[] {};
+        String orderByString = DbConstants.CartTable.COLUMN_CLOSED_DATE + " DESC";
+        Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, null, orderByString);
+        return loadAllAndCloseCursor(cursor);
+    }
 
     public CartDbDaoImpl() {
         super(MobileERPApplication.getDatabaseHelper());

@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="10.99"
-                android:id="@+id/price"
+                android:id="@+id/unit_price"
                 android:layout_weight="0" />
 
         </LinearLayout>
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="10.99"
-            android:id="@+id/totalPrice"
+            android:id="@+id/total_prod_price"
             android:layout_gravity="right" />
 
     </LinearLayout>

@@ -12,6 +12,7 @@ public class DbConstants {
         public static final String COLUMN_ID = "p_id";
         public static final String COLUMN_NAME = "p_name";
         public static final String COLUMN_DESCRIPTION = "p_description";
+        public static final String COLUMN_INGREDIENTS = "p_ingredients";
         public static final String COLUMN_IMAGE_URL = "p_image_url";
         public static final String COLUMN_BARCODE = "p_barcode";
         public static final String COLUMN_PRICE = "p_price";
@@ -20,9 +21,10 @@ public class DbConstants {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME + " TEXT, " +
                 COLUMN_DESCRIPTION + " TEXT, " +
+                COLUMN_INGREDIENTS + " TEXT, " +
                 COLUMN_BARCODE + " TEXT, " +
                 COLUMN_IMAGE_URL + " TEXT, " +
-                COLUMN_PRICE + " DECIMAL(10,2) " +
+                COLUMN_PRICE + " DOUBLE " +
             " )";
 
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

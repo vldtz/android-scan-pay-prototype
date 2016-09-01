@@ -9,9 +9,10 @@ public class ProductDto extends BaseDto<Long> {
 
     private String name;
     private String description;
+    private String ingredients;
     private String barcode;
     private String imageUrl;
-    private Double price;
+    private Float price;
 
     public String getName() {
         return name;
@@ -45,11 +46,19 @@ public class ProductDto extends BaseDto<Long> {
         this.imageUrl = imageUrl;
     }
 
-    public Double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
     }
 }

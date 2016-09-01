@@ -56,23 +56,26 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageButton barcodeMainBtn = (ImageButton) findViewById(R.id.barcodeScanBtn);
-        barcodeMainBtn.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener barcodeInitClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 initBarcodeScan();
             }
-        });
+        };
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setVisibility(View.GONE);
-        /*fab.setOnClickListener(new View.OnClickListener() {
+        ImageButton barcodeMainBtn = (ImageButton) findViewById(R.id.barcodeScanBtn);
+        barcodeMainBtn.setOnClickListener(barcodeInitClickListener);
+
+        ImageButton cartMainBtn = (ImageButton) findViewById(R.id.myCartBtn);
+        cartMainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                launchShoppingCartActivity();
             }
-        });*/
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_scan_barcode);
+        fab.setOnClickListener(barcodeInitClickListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -126,8 +129,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_scan_barcode) {
             initBarcodeScan();
-        } else if (id == R.id.nav_product_list) {
-            launchListActivity();
+        } else if (id == R.id.nav_my_cart) {
+            launchShoppingCartActivity();
         }/* TODO else if (id == R.id.nav_slideshow) {
 
         }*/
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void launchListActivity() {
+    private void launchShoppingCartActivity() {
         Intent intent = new Intent(this, ShoppingCartActivity.class);
         startActivity(intent);
     }
@@ -145,10 +148,10 @@ public class MainActivity extends AppCompatActivity
     private void initBarcodeScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setOrientationLocked(false);
-//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        integrator.setBeepEnabled(true);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES);
         integrator.setPrompt("Scanati codul de bare");
 //            integrator.setCameraId(0);  // Use a specific camera of the device
-        integrator.setBeepEnabled(false);
 //            integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
     }

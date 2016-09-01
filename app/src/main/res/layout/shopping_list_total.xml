@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="10.99"
-            android:id="@+id/totalPrice"
+            android:id="@+id/shopping_list_total_price"
             android:layout_gravity="right" />
 
     </LinearLayout>

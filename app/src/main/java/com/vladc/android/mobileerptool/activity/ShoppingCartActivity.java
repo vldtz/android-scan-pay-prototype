@@ -1,7 +1,9 @@
 package com.vladc.android.mobileerptool.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -9,15 +11,22 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.data.db.entities.Product;
+import com.vladc.android.mobileerptool.data.db.entities.ProductToCart;
+import com.vladc.android.mobileerptool.data.db.entities.ShoppingCart;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
+import com.vladc.android.mobileerptool.shared.service.CartServiceImpl;
 import com.vladc.android.mobileerptool.shared.service.ProductServiceImpl;
 
 import java.util.List;
@@ -32,7 +41,13 @@ import java.util.List;
  */
 public class ShoppingCartActivity extends AppCompatActivity {
 
+    private static final String TAG = ShoppingCartActivity.class.getSimpleName();
     private SimpleCursorAdapter adapter;
+
+    private ShoppingCart mCart;
+    private CartServiceImpl mCartService;
+
+    private ProgressDialog mLoader = null;
 
 
     @Override
@@ -53,11 +68,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
+        mCartService = new CartServiceImpl(this);
+        mCart = mCartService.getCurrentShoppingCart();
+
         View recyclerView = findViewById(R.id.product_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        TextView listTotalView = (TextView) findViewById(R.id.shopping_list_total_price);
+        listTotalView.setText(mCart.getCartTotal() + " RON");
     }
 
     private void initBarcodeScan() {
@@ -72,17 +93,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        ProductServiceImpl productService = new ProductServiceImpl(this);
-        List<Product> items = productService.getAll();
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(items));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(mCart.getProducts()));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<Product> mValues;
+        private final List<ProductToCart> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<Product> items) {
+        public SimpleItemRecyclerViewAdapter(List<ProductToCart> items) {
             mValues = items;
         }
 
@@ -97,19 +116,28 @@ public class ShoppingCartActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
 //            holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
-            holder.mNameView.setText(mValues.get(position).getName());
-            holder.mPriceView.setText(mValues.get(position).getBarcode());
-//            holder.mQuantityView.setText(String.valueOf(mValues.get(position).getQuantity()));
+            holder.mNameView.setText(holder.mItem.getProduct().getName());
+            holder.mPriceView.setText(holder.mItem.getProduct().getPrice() + "");
+            holder.mQuantityView.setText(String.valueOf(holder.mItem.getQuantity()));
+            Float totalPrice = holder.mItem.getQuantity() * holder.mItem.getProduct().getPrice();
+            totalPrice = Math.round(totalPrice*100)/100f;
+            holder.mTotalProdPrice.setText(String.valueOf(totalPrice));
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, ProductDetailActivity.class);
-                    //TODO
-                    intent.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, holder.mItem);
-
+                    intent.putExtra(ProductDetailActivity.SHOW_REMOVE_BUTTON, true);
+                    intent.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, holder.mItem.getProduct());
                     context.startActivity(intent);
+                }
+            });
+
+            holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return true;
                 }
             });
         }
@@ -124,14 +152,16 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public final TextView mNameView;
             public final TextView mPriceView;
             public final TextView mQuantityView;
-            public Product mItem;
+            public final TextView mTotalProdPrice;
+            public ProductToCart mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mNameView = (TextView) view.findViewById(R.id.name);
-                mPriceView = (TextView) view.findViewById(R.id.price);
+                mPriceView = (TextView) view.findViewById(R.id.unit_price);
                 mQuantityView = (TextView) view.findViewById(R.id.quantity);
+                mTotalProdPrice = (TextView) view.findViewById(R.id.total_prod_price);
             }
 
             @Override
@@ -141,21 +171,82 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-//        if (requestCode == MainActivity.REQUEST_BARCODE_CAPTURE && result != null) {
-//            if(result.getContents() == null) {
-//                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-//            } else {
-//                Intent addEditProduct = new Intent(this, AddEditProductActivity.class);
-//                addEditProduct.putExtra(ProductDetailFragment.ARG_ITEM_BARCODE, result.getContents());
-//                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-//
-//                startActivity(addEditProduct);
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
+    // Get the results:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainActivity.REQUEST_BARCODE_CAPTURE && scanResult != null) {
+            if (scanResult.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                /*
+                * Shows a loader, fetch product hide loader when done and goto product details
+                */
+                new AsyncTask<String, Void, Product>() {
+                    @Override
+                    protected void onPreExecute() {
+                        displayDialog(); /* watch out, this is on main thread! */
+                    }
+
+                    @Override
+                    protected Product doInBackground(String... params) {
+                        final Context context = MobileERPApplication.getContext();
+                        ProductServiceImpl productService = new ProductServiceImpl(context);
+                        return productService.getProductCachedByBarcode(params[0]);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Product result) {
+                        closeDialog();
+                        final Context context = MobileERPApplication.getContext();
+                        Intent productDetails = new Intent(context, ProductDetailActivity.class);
+                        productDetails.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, result);
+                        Toast.makeText(context, "Scanned: " + scanResult.getContents(), Toast.LENGTH_LONG).show();
+
+                        startActivity(productDetails);
+                    }
+                }.execute(scanResult.getContents());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    /**
+     * Useful function to init the mLoader
+     */
+    private void displayDialog() {
+        if (mLoader == null) {
+            final String title = getResources().getString(R.string.generic_load_title);
+            final String message = getResources().getString(R.string.generic_load_message);
+            mLoader = ProgressDialog.show(ShoppingCartActivity.this, title, message, true, false);
+        } else {
+            if (!mLoader.isShowing()) {
+                mLoader.show();
+            }
+        }
+        Log.d(TAG, "Loader opened, have fun");
+    }
+
+    /**
+     * Useful function to cancel the mLoader
+     */
+    private void closeDialog() {
+        if (mLoader != null) {
+            mLoader.dismiss();
+        }
+        Log.d(TAG, "Loader closed, have fun");
+    }
+
+    @Override
+    protected void onStop() {
+        closeDialog();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        closeDialog();
+        super.onDestroy();
+    }
 }

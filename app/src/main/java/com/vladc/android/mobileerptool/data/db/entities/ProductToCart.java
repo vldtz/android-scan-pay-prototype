@@ -5,9 +5,10 @@ package com.vladc.android.mobileerptool.data.db.entities;
  */
 public class ProductToCart extends DataObject<Long> {
 
+    private Product product;
     private Long productId;
     private Long cartId;
-    private Long quantity;
+    private Long quantity = 0L;
 
     public Long getProductId() {
         return productId;
@@ -31,5 +32,13 @@ public class ProductToCart extends DataObject<Long> {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

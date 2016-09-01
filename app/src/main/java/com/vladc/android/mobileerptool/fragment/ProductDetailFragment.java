@@ -78,6 +78,15 @@ public class ProductDetailFragment extends Fragment {
 //            ((TextView) rootView.findViewById(R.id.field_id)).setText(String.valueOf(mItem.getId()));
 //            ((TextView) rootView.findViewById(R.id.field_barcode)).setText(mItem.getBarcode());
             ((TextView) rootView.findViewById(R.id.field_name)).setText(mItem.getName());
+            ((TextView) rootView.findViewById(R.id.field_price)).setText(mItem.getPrice() + " RON");
+            ((TextView) rootView.findViewById(R.id.field_description)).setText(mItem.getDescription());
+            if (mItem.getIngredients() != null){
+                rootView.findViewById(R.id.label_ingredients).setVisibility(View.VISIBLE);
+                TextView ingredientsView = ((TextView) rootView.findViewById(R.id.field_ingredients));
+                ingredientsView.setVisibility(View.VISIBLE);
+                ingredientsView.setText(mItem.getIngredients());
+
+            }
 //            ((TextView) rootView.findViewById(R.id.field_quantity)).setText(String.valueOf(mItem.getQuantity()));
 
 

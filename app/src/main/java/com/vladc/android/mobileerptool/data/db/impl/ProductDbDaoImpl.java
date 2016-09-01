@@ -36,7 +36,8 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
                 DbConstants.ProductTable.COLUMN_DESCRIPTION,
                 DbConstants.ProductTable.COLUMN_IMAGE_URL,
                 DbConstants.ProductTable.COLUMN_BARCODE,
-                DbConstants.ProductTable.COLUMN_PRICE
+                DbConstants.ProductTable.COLUMN_PRICE,
+                DbConstants.ProductTable.COLUMN_INGREDIENTS
         };
     }
 
@@ -48,7 +49,8 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
         entity.setDescription(c.getString(2));
         entity.setImageUrl(c.getString(3));
         entity.setBarcode(c.getString(4));
-        entity.setPrice(c.getDouble(5));
+        entity.setPrice(c.getFloat(5));
+        entity.setIngredients(c.getString(6));
         return entity;
     }
 
@@ -58,6 +60,7 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
         //putValue(contentValues, DbConstants.StudentTable.COLUMN_ID, entity.getId());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_NAME, entity.getName());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_DESCRIPTION, entity.getDescription());
+        putValue(contentValues, DbConstants.ProductTable.COLUMN_INGREDIENTS, entity.getIngredients());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_IMAGE_URL, entity.getImageUrl());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_BARCODE, entity.getBarcode());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_PRICE, entity.getPrice());

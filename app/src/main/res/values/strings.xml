@@ -15,7 +15,7 @@
 
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">Preferinte informatii produs</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
@@ -72,4 +72,6 @@
 
     <string name="generic_load_title">Please wait</string>
     <string name="generic_load_message">Data is loading</string>
+    <string name="label_product_description">Descriere produs</string>
+    <string name="label_product_ingredients">Ingrediente</string>
 </resources>

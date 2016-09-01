@@ -9,9 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.R;
 import com.vladc.android.mobileerptool.data.db.entities.Product;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
+import com.vladc.android.mobileerptool.shared.service.CartServiceImpl;
 
 /**
  * An activity representing a single Product detail screen. This
@@ -22,9 +24,9 @@ import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
 public class ProductDetailActivity extends AppCompatActivity {
 
     public static final String ARG_ITEM_BARCODE = "item_barcode";
+    public static final String SHOW_REMOVE_BUTTON = "has_remove_button";
 
     Product mProduct;
-    Long mCurrentProductId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         //
         // http://developer.android.com/guide/components/fragments.html
         //
+        boolean showRemoveButton = false;
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -56,30 +59,36 @@ public class ProductDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.product_detail_container, fragment)
                     .commit();
-
-            mCurrentProductId = getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L);
+            showRemoveButton = getIntent().getBooleanExtra(SHOW_REMOVE_BUTTON, false);
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent editItemIntent = new Intent(getApplicationContext(), AddEditProductActivity.class);
-                editItemIntent.putExtra(ProductDetailFragment.ARG_PRODUCT_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L));
-
-                startActivity(editItemIntent);
-            }
-        });*/
-        fab.setVisibility(View.GONE);
 
         FloatingActionButton fabAddToCart = (FloatingActionButton) findViewById(R.id.fab_shopping_cart);
         fabAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent editItemIntent = new Intent(getApplicationContext(), AddEditProductActivity.class);
-//                editItemIntent.putExtra(ProductDetailFragment.ARG_PRODUCT_ID, getIntent().getLongExtra(ProductDetailFragment.ARG_PRODUCT_ID, 0L));
-//
-//                startActivity(editItemIntent);
+                CartServiceImpl cartService = new CartServiceImpl(MobileERPApplication.getContext());
+                Product product = (Product) getIntent().getSerializableExtra(ProductDetailFragment.PRODUCT_OBJ_KEY);
+                cartService.addProductToCurrentCart(product.getId());
+
+                Intent shoppingCartIntent = new Intent(getApplicationContext(), ShoppingCartActivity.class);
+
+                startActivity(shoppingCartIntent);
+            }
+        });
+        FloatingActionButton fabRemoveFromCart = (FloatingActionButton) findViewById(R.id.fab_shopping_cart_remove);
+        if (showRemoveButton) {
+            fabRemoveFromCart.setVisibility(View.VISIBLE);
+        }
+        fabRemoveFromCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CartServiceImpl cartService = new CartServiceImpl(MobileERPApplication.getContext());
+                Product product = (Product) getIntent().getSerializableExtra(ProductDetailFragment.PRODUCT_OBJ_KEY);
+                cartService.removeProductFromCurrentCart(product.getId());
+
+                Intent shoppingCartIntent = new Intent(getApplicationContext(), ShoppingCartActivity.class);
+
+                startActivity(shoppingCartIntent);
             }
         });
     }

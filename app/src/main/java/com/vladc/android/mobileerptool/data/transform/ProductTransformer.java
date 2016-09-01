@@ -20,6 +20,7 @@ public class ProductTransformer extends Transformer<ProductDto, Product> {
         output.setBarcode(input.getBarcode());
         output.setName(input.getName());
         output.setDescription(input.getDescription());
+        output.setIngredients(input.getIngredients());
         output.setImageUrl(input.getImageUrl());
         output.setPrice(input.getPrice());
         return output;

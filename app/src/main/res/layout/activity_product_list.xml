@@ -49,17 +49,38 @@
                 android:layout_height="wrap_content"
                 layout="@layout/shopping_list_total"
                 android:layout_weight="0" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_checkout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/nav_header_vertical_spacing"
+                    android:src="@drawable/ic_checkout"
+                    android:layout_weight="0" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/barcode"
+                    android:layout_weight="0" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/barcode" />
 
 
 </android.support.design.widget.CoordinatorLayout>

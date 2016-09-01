@@ -7,9 +7,10 @@ public class Product extends DataObject<Long> {
 
     private String name;
     private String description;
+    private String ingredients;
     private String barcode;
     private String imageUrl;
-    private Double price;
+    private Float price;
 
     public String getName() {
         return name;
@@ -31,6 +32,14 @@ public class Product extends DataObject<Long> {
         return description;
     }
 
+    public String getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -43,11 +52,11 @@ public class Product extends DataObject<Long> {
         this.imageUrl = imageUrl;
     }
 
-    public Double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 }

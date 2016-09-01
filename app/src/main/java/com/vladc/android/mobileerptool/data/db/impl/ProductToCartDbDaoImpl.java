@@ -7,6 +7,8 @@ import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.data.DbConstants;
 import com.vladc.android.mobileerptool.data.db.entities.ProductToCart;
 
+import java.util.List;
+
 /**
  * Created by Vlad.
  */
@@ -49,5 +51,19 @@ public class ProductToCartDbDaoImpl extends DatabaseEntityDaoImpl<ProductToCart>
         putValue(contentValues, DbConstants.ProductToCartTable.COLUMN_PRODUCT_ID, entity.getProductId());
         putValue(contentValues, DbConstants.ProductToCartTable.COLUMN_QUANTITY, entity.getQuantity());
         return contentValues;
+    }
+
+    public List<ProductToCart> getByCartId(Long cartId) {
+        String selection = DbConstants.ProductToCartTable.COLUMN_CART_ID + "=?";
+        String[] selectionArgs = new String[] {cartId + ""};
+        Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, null, null);
+        return loadAllAndCloseCursor(cursor);
+    }
+
+    public ProductToCart getForProductAndCart(Long productId, Long cartId) {
+        String selection = DbConstants.ProductToCartTable.COLUMN_CART_ID + "=? AND " + DbConstants.ProductToCartTable.COLUMN_PRODUCT_ID + "=?";
+        String[] selectionArgs = new String[] {cartId + "", productId + ""};
+        Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, null, null);
+        return loadUniqueAndCloseCursor(cursor);
     }
 }
