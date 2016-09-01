@@ -31,6 +31,7 @@ import com.vladc.android.mobileerptool.data.db.entities.ShoppingCart;
 import com.vladc.android.mobileerptool.fragment.ProductDetailFragment;
 import com.vladc.android.mobileerptool.shared.service.CartServiceImpl;
 import com.vladc.android.mobileerptool.shared.service.ProductServiceImpl;
+import com.vladc.android.mobileerptool.util.NetworkUtil;
 
 import java.util.List;
 
@@ -62,7 +63,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +72,59 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         mCartService = new CartServiceImpl(this);
         reloadShoppingCart();
+
+        FloatingActionButton checkout = (FloatingActionButton) findViewById(R.id.fab_checkout);
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AsyncTask<ShoppingCart, Void, Boolean>() {
+                    @Override
+                    protected void onPreExecute() {
+                        displayDialog();
+                    }
+
+                    @Override
+                    protected Boolean doInBackground(ShoppingCart... shoppingCarts) {
+                        return mCartService.checkoutCurrentCart();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean result) {
+                        closeDialog();
+
+                        if (!result) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingCartActivity.this);
+                            builder.setTitle("A aparut o eroare.");
+                            if (NetworkUtil.ifDown(MobileERPApplication.getContext())){
+                                builder.setMessage("Verificati conexiunea la internet si incercati din nou");
+                            } else if (mCart.getProducts().size() == 0){
+                                builder.setMessage("Nu aveti niciun produs in cos");
+                            } else {
+                                builder.setMessage("Incercati din nou.");
+                            }
+
+                            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.create().show();
+                            return;
+                        }
+
+                        gotoLastCheckoutActivity();
+                    }
+                }.execute();
+            }
+        });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void gotoLastCheckoutActivity() {
+        Intent intent = new Intent(this, LastCheckoutActivity.class);
+        startActivity(intent);
     }
 
     private void initBarcodeScan() {

@@ -1,6 +1,7 @@
 package com.vladc.android.mobileerptool.shared.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.vladc.android.mobileerptool.MobileERPApplication;
 import com.vladc.android.mobileerptool.data.db.entities.Cart;
@@ -9,9 +10,15 @@ import com.vladc.android.mobileerptool.data.db.entities.ShoppingCart;
 import com.vladc.android.mobileerptool.data.db.impl.CartDbDaoImpl;
 import com.vladc.android.mobileerptool.data.db.impl.ProductDbDaoImpl;
 import com.vladc.android.mobileerptool.data.db.impl.ProductToCartDbDaoImpl;
+import com.vladc.android.mobileerptool.data.rest.impl.CheckoutRestDaoImpl;
+import com.vladc.android.mobileerptool.shared.service.dto.CheckoutRequestDto;
+import com.vladc.android.mobileerptool.shared.service.dto.CheckoutResponseDto;
+import com.vladc.android.mobileerptool.util.NetworkUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Vlad.
@@ -24,6 +31,7 @@ public class CartServiceImpl {
     private ProductDbDaoImpl productDbDao;
     private CartDbDaoImpl cartDbDao;
     private ProductToCartDbDaoImpl productToCartDbDao;
+    private CheckoutRestDaoImpl checkoutRestDao;
 
     public CartServiceImpl() {
         this(MobileERPApplication.getContext());
@@ -35,6 +43,7 @@ public class CartServiceImpl {
         productDbDao = new ProductDbDaoImpl();
         productToCartDbDao = new ProductToCartDbDaoImpl();
         cartDbDao = new CartDbDaoImpl();
+        checkoutRestDao = new CheckoutRestDaoImpl();
     }
 
     public ProductToCart addProductToCurrentCart(Long productId){
@@ -116,5 +125,39 @@ public class CartServiceImpl {
             result.add(sc);
         }
         return result;
+    }
+
+    public boolean checkoutCurrentCart(){
+        ShoppingCart cart = getCurrentShoppingCart();
+
+        if (cart.getProducts().size() == 0){
+            return false;
+        }
+
+        if (NetworkUtil.ifDown(context)) {
+            return false;
+        }
+
+        Map<String, Long> productList = new HashMap<>();
+
+        for (ProductToCart pc : cart.getProducts()){
+            productList.put(pc.getProduct().getBarcode(), pc.getQuantity());
+        }
+
+        CheckoutRequestDto checkoutRequestDto = new CheckoutRequestDto();
+        checkoutRequestDto.setProducts(productList);
+
+        try {
+            CheckoutResponseDto response = checkoutRestDao.checkout(checkoutRequestDto);
+            if (response != null){
+                cart.setExternalId(response.getId());
+                cart.setDateClosed(response.getDate());
+                cartDbDao.update(cart);
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error sending cart to server", e);
+        }
+        return false;
     }
 }

@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_shopping_cart_black"
             android:title="Cosul meu" />
         <item
+            android:id="@+id/nav_last_checkout"
+            android:icon="@drawable/ic_receipt_black"
+            android:title="Ultima plata" />
+        <item
             android:id="@+id/nav_shopping_history"
             android:icon="@drawable/ic_history_black"
             android:title="Istoric cumparaturi" />

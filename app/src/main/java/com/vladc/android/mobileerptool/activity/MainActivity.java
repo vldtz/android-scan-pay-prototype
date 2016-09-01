@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity
             initBarcodeScan();
         } else if (id == R.id.nav_my_cart) {
             launchShoppingCartActivity();
+        } else if (id == R.id.nav_last_checkout){
+            launchLastCheckoutActivity();
         }/* TODO else if (id == R.id.nav_slideshow) {
 
         }*/
@@ -142,6 +144,11 @@ public class MainActivity extends AppCompatActivity
 
     private void launchShoppingCartActivity() {
         Intent intent = new Intent(this, ShoppingCartActivity.class);
+        startActivity(intent);
+    }
+
+    private void launchLastCheckoutActivity() {
+        Intent intent = new Intent(this, LastCheckoutActivity.class);
         startActivity(intent);
     }
 

@@ -30,6 +30,14 @@ public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
         return loadAllAndCloseCursor(cursor);
     }
 
+    public Cart getLastClosed() {
+        String selection = DbConstants.CartTable.COLUMN_CLOSED_DATE + " IS NOT NULL";
+        String[] selectionArgs = new String[] {};
+        String orderByString = DbConstants.CartTable.COLUMN_CLOSED_DATE + " DESC";
+        Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, "", orderByString);
+        return loadAllFromCursor(cursor).get(0);
+    }
+
     public CartDbDaoImpl() {
         super(MobileERPApplication.getDatabaseHelper());
     }
