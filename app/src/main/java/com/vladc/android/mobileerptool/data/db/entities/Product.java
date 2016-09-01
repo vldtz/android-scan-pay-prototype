@@ -8,6 +8,10 @@ public class Product extends DataObject<Long> {
     private String name;
     private String description;
     private String ingredients;
+    private String promotions;
+    private String producer;
+    private String producerUrl;
+    private String storingConditions;
     private String barcode;
     private String imageUrl;
     private Float price;
@@ -58,5 +62,37 @@ public class Product extends DataObject<Long> {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getPromotions() {
+        return promotions;
+    }
+
+    public void setPromotions(String promotions) {
+        this.promotions = promotions;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public String getProducerUrl() {
+        return producerUrl;
+    }
+
+    public void setProducerUrl(String producerUrl) {
+        this.producerUrl = producerUrl;
+    }
+
+    public String getStoringConditions() {
+        return storingConditions;
+    }
+
+    public void setStoringConditions(String storingConditions) {
+        this.storingConditions = storingConditions;
     }
 }

@@ -2,6 +2,7 @@ package com.vladc.android.mobileerptool.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -194,12 +196,24 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     protected void onPostExecute(Product result) {
                         closeDialog();
-                        final Context context = MobileERPApplication.getContext();
-                        Intent productDetails = new Intent(context, ProductDetailActivity.class);
-                        productDetails.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, result);
-                        Toast.makeText(context, "Scanned: " + scanResult.getContents(), Toast.LENGTH_LONG).show();
+                        if (result == null){
+                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                            alert.setTitle("Produsul nu a fost gasit")
+                                    .setMessage("Va rugam sa prezentati acest produs la casa de marcat pentru scanare.")
+                                    .setNeutralButton("Inchide", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create().show();
+                        } else {
+                            final Context context = MobileERPApplication.getContext();
+                            Intent productDetails = new Intent(context, ProductDetailActivity.class);
+                            productDetails.putExtra(ProductDetailFragment.PRODUCT_OBJ_KEY, result);
+                            Toast.makeText(context, "Scanned: " + scanResult.getContents(), Toast.LENGTH_LONG).show();
 
-                        startActivity(productDetails);
+                            startActivity(productDetails);
+                        }
                     }
                 }.execute(scanResult.getContents());
             }

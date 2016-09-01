@@ -37,7 +37,11 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
                 DbConstants.ProductTable.COLUMN_IMAGE_URL,
                 DbConstants.ProductTable.COLUMN_BARCODE,
                 DbConstants.ProductTable.COLUMN_PRICE,
-                DbConstants.ProductTable.COLUMN_INGREDIENTS
+                DbConstants.ProductTable.COLUMN_INGREDIENTS,
+                DbConstants.ProductTable.COLUMN_PRODUCER,
+                DbConstants.ProductTable.COLUMN_PRODUCER_URL,
+                DbConstants.ProductTable.COLUMN_PROMOTIONS,
+                DbConstants.ProductTable.COLUMN_STORING_CONDITIONS,
         };
     }
 
@@ -51,6 +55,10 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
         entity.setBarcode(c.getString(4));
         entity.setPrice(c.getFloat(5));
         entity.setIngredients(c.getString(6));
+        entity.setProducer(c.getString(7));
+        entity.setProducerUrl(c.getString(8));
+        entity.setPromotions(c.getString(9));
+        entity.setStoringConditions(c.getString(10));
         return entity;
     }
 
@@ -61,6 +69,10 @@ public class ProductDbDaoImpl extends DatabaseEntityDaoImpl<Product> {
         putValue(contentValues, DbConstants.ProductTable.COLUMN_NAME, entity.getName());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_DESCRIPTION, entity.getDescription());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_INGREDIENTS, entity.getIngredients());
+        putValue(contentValues, DbConstants.ProductTable.COLUMN_PRODUCER, entity.getProducer());
+        putValue(contentValues, DbConstants.ProductTable.COLUMN_PRODUCER_URL, entity.getProducerUrl());
+        putValue(contentValues, DbConstants.ProductTable.COLUMN_PROMOTIONS, entity.getPromotions());
+        putValue(contentValues, DbConstants.ProductTable.COLUMN_STORING_CONDITIONS, entity.getStoringConditions());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_IMAGE_URL, entity.getImageUrl());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_BARCODE, entity.getBarcode());
         putValue(contentValues, DbConstants.ProductTable.COLUMN_PRICE, entity.getPrice());

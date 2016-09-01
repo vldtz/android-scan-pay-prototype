@@ -10,6 +10,10 @@ public class ProductDto extends BaseDto<Long> {
     private String name;
     private String description;
     private String ingredients;
+    private String promotions;
+    private String producer;
+    private String producerUrl;
+    private String storingConditions;
     private String barcode;
     private String imageUrl;
     private Float price;
@@ -60,5 +64,37 @@ public class ProductDto extends BaseDto<Long> {
 
     public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public String getPromotions() {
+        return promotions;
+    }
+
+    public void setPromotions(String promotions) {
+        this.promotions = promotions;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public String getProducerUrl() {
+        return producerUrl;
+    }
+
+    public void setProducerUrl(String producerUrl) {
+        this.producerUrl = producerUrl;
+    }
+
+    public String getStoringConditions() {
+        return storingConditions;
+    }
+
+    public void setStoringConditions(String storingConditions) {
+        this.storingConditions = storingConditions;
     }
 }

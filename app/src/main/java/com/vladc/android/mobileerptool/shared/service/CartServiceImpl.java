@@ -16,6 +16,7 @@ import com.vladc.android.mobileerptool.shared.service.dto.CheckoutResponseDto;
 import com.vladc.android.mobileerptool.util.NetworkUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +163,7 @@ public class CartServiceImpl {
             CheckoutResponseDto response = checkoutRestDao.checkout(checkoutRequestDto);
             if (response != null){
                 cart.setExternalId(response.getId());
-                cart.setDateClosed(response.getDate());
+                cart.setDateClosed(new Date());
                 cartDbDao.update(cart);
                 return true;
             }

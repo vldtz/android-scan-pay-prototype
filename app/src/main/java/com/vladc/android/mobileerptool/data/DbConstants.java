@@ -16,6 +16,10 @@ public class DbConstants {
         public static final String COLUMN_IMAGE_URL = "p_image_url";
         public static final String COLUMN_BARCODE = "p_barcode";
         public static final String COLUMN_PRICE = "p_price";
+        public static final String COLUMN_PROMOTIONS = "p_promotions";
+        public static final String COLUMN_PRODUCER = "p_producer";
+        public static final String COLUMN_PRODUCER_URL = "p_producer_url";
+        public static final String COLUMN_STORING_CONDITIONS = "p_storing_conditions";
 
         public static final String TABLE_NAME_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -24,7 +28,11 @@ public class DbConstants {
                 COLUMN_INGREDIENTS + " TEXT, " +
                 COLUMN_BARCODE + " TEXT, " +
                 COLUMN_IMAGE_URL + " TEXT, " +
-                COLUMN_PRICE + " DOUBLE " +
+                COLUMN_PRICE + " DOUBLE, " +
+                COLUMN_PROMOTIONS + " TEXT, " +
+                COLUMN_PRODUCER + " TEXT, " +
+                COLUMN_PRODUCER_URL + " TEXT, " +
+                COLUMN_STORING_CONDITIONS + " TEXT " +
             " )";
 
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

@@ -22,8 +22,12 @@ import com.vladc.android.mobileerptool.data.db.entities.Product;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +61,7 @@ public class ProductDetailFragment extends Fragment {
     private TextView mStoringConditionsView;
     private TextView mPromotionsView;
     private TextView mProducerView;
-    private TextView mProducerUrl;
+    private TextView mProducerUrlView;
 
 
     public static ProductDetailFragment newInstance(Product serializable) {
@@ -105,20 +109,25 @@ public class ProductDetailFragment extends Fragment {
             mStoringConditionsView = (TextView) rootView.findViewById(R.id.field_storing_conditions);
             mPromotionsView = (TextView) rootView.findViewById(R.id.field_promotions);
             mProducerView = (TextView) rootView.findViewById(R.id.field_producer);
-            mProducerUrl = (TextView) rootView.findViewById(R.id.field_producer_url);
+            mProducerUrlView = (TextView) rootView.findViewById(R.id.field_producer_url);
 
             mDescriptionView.setText(mItem.getDescription());
             mIngredientsView.setText(mItem.getIngredients());
+            mProducerView.setText(mItem.getProducer());
+            mProducerUrlView.setText(mItem.getProducerUrl());
+            mPromotionsView.setText(mItem.getPromotions());
+            mStoringConditionsView.setText(mItem.getStoringConditions());
 
             mAvailableFields.put("description", mDescriptionView);
             mAvailableFields.put("ingredients", mIngredientsView);
             mAvailableFields.put("storing_conditions", mStoringConditionsView);
             mAvailableFields.put("promotions", mPromotionsView);
             mAvailableFields.put("producer", mProducerView);
-            mAvailableFields.put("producer_url", mProducerUrl);
+            mAvailableFields.put("producer_url", mProducerUrlView);
             mAvailableFields.put("image", mImageView);
 
             filterDisplayedInfo(rootView, false);
+            displayWarnings(rootView);
 
             if (mItem.getImageUrl() != null) {
                 imageLoader.displayImage(mItem.getImageUrl(), mImageView);
@@ -139,16 +148,74 @@ public class ProductDetailFragment extends Fragment {
         return rootView;
     }
 
+    private void displayWarnings(View rootView) {
+        if (StringUtils.isEmpty(mItem.getIngredients())) {
+            return;
+        }
+
+        List<String> ingredientsList = Arrays.asList(StringUtils.split(mItem.getIngredients(),","));
+
+        View badIngredientsContainer = rootView.findViewById(R.id.layout_bad_list_ingredients_warning);
+        TextView badIngredientsText = (TextView) rootView.findViewById(R.id.field_bad_list_ingredients);
+
+        View goodIngredientsContainer = rootView.findViewById(R.id.layout_good_list_ingredients_warning);
+        TextView goodIngredientsText = (TextView) rootView.findViewById(R.id.field_good_list_ingredients);
+
+        final SharedPreferences mSharedPreference= PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        Set<String> badList = mSharedPreference.getStringSet(SettingsActivity.PREF_INGREDIENTS_LIST_BAD_KEY, Collections.<String>emptySet());
+        Set<String> goodList = mSharedPreference.getStringSet(SettingsActivity.PREF_INGREDIENTS_LIST_GOOD_KEY, Collections.<String>emptySet());
+
+        List<String> matchingBad = new ArrayList<>();
+        List<String> matchingGood = new ArrayList<>();
+
+        for (String i : ingredientsList) {
+            for (String bi : badList) {
+                if (StringUtils.containsIgnoreCase(i,bi)){
+                    matchingBad.add(i);
+                }
+            }
+
+            for (String gi : goodList) {
+                if (StringUtils.containsIgnoreCase(i,gi)){
+                    matchingGood.add(i);
+                }
+            }
+        }
+
+        if (matchingBad.size() > 0){
+            badIngredientsContainer.setVisibility(View.VISIBLE);
+            badIngredientsText.setText(StringUtils.join(matchingBad, ", "));
+        } else {
+            badIngredientsContainer.setVisibility(View.GONE);
+        }
+
+        if (matchingGood.size() > 0){
+            goodIngredientsContainer.setVisibility(View.VISIBLE);
+            goodIngredientsText.setText(StringUtils.join(matchingGood, ", "));
+        } else {
+            goodIngredientsContainer.setVisibility(View.GONE);
+        }
+
+
+    }
+
     private void filterDisplayedInfo(View rootView, boolean showMore) {
         final SharedPreferences mSharedPreference= PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean displayEmptyTextFields = mSharedPreference.getBoolean(SettingsActivity.PREF_INFO_SHOW_EMPTY_KEY, false);
-        Set<String> displayedFields = mSharedPreference.getStringSet(SettingsActivity.PREF_INFO_CATEGORIES_KEY, Collections.<String>emptySet());
+        List<String> defaultFields = Arrays.asList(getResources().getStringArray(R.array.pref_info_categories_list_values));
+        Set<String> defaultSet = new HashSet<>(defaultFields.size());
+        defaultSet.addAll(defaultFields);
+        Set<String> displayedFields = mSharedPreference.getStringSet(SettingsActivity.PREF_INFO_CATEGORIES_KEY, defaultSet);
 
         int hiddenFields = 0;
 
         for (Map.Entry<String, View> entry : mAvailableFields.entrySet()){
             boolean visible = showMore || displayedFields.contains(entry.getKey());
             int visibility = visible ? View.VISIBLE : View.GONE;
+            if (!visible) {
+                hiddenFields++;
+            }
 
             if (entry.getValue() instanceof TextView){
                 TextView view = (TextView) entry.getValue();
@@ -159,10 +226,6 @@ public class ProductDetailFragment extends Fragment {
             entry.getValue().setVisibility(visibility);
             if (entry.getValue().getLabelFor() != View.NO_ID) {
                 rootView.findViewById(entry.getValue().getLabelFor()).setVisibility(visibility);
-            }
-
-            if (!visible) {
-                hiddenFields++;
             }
         }
 

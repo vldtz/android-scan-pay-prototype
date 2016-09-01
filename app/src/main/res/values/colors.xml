@@ -11,4 +11,6 @@
     <color name="transparent_black">#88000000</color>
     <color name="transparent_white">#88FFFFFF</color>
     <color name="lt_gray">#AAAAAA</color>
+    <color name="red_warning_bg">#fdabab</color>
+    <color name="green_warning_bg">#98e995</color>
 </resources>

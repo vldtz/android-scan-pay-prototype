@@ -37,6 +37,7 @@ public class ShoppingCart extends Cart{
         for (ProductToCart pc : products){
             cartTotal += pc.getQuantity() * pc.getProduct().getPrice();
         }
+        cartTotal = Math.round(cartTotal*100)/100f;
     }
 
     public Float getCartTotal() {

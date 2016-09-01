@@ -40,4 +40,6 @@
     <string name="default_url">http://www.something.com</string>
     <string name="text_show_more">Afiseaza mai mult</string>
     <string name="text_show_less">Afiseaza mai putin</string>
+    <string name="text_warning_bad_items">Atentie! Acest produs contine:</string>
+    <string name="text_warning_good_items">Acest produs contine:</string>
 </resources>

@@ -35,7 +35,8 @@ public class CartDbDaoImpl extends DatabaseEntityDaoImpl<Cart> {
         String[] selectionArgs = new String[] {};
         String orderByString = DbConstants.CartTable.COLUMN_CLOSED_DATE + " DESC";
         Cursor cursor = db.query(getTableName(), getColumns(), selection, selectionArgs, null, "", orderByString);
-        return loadAllFromCursor(cursor).get(0);
+        List<Cart> carts = loadAllFromCursor(cursor);
+        return carts.size() > 0 ? carts.get(0) : null;
     }
 
     public CartDbDaoImpl() {
